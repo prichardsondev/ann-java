@@ -5,13 +5,13 @@ import java.util.Random;
 
 public class FullyConnectedLayer extends Layer {
 
-    private double[][] _weights;
-    private int _inLength;
-    private int _outLength;
-    private long _seed;
+    private final double[][] _weights;
+    private final int _inLength;
+    private final int _outLength;
+    private final long _seed;
     private final double leak = 0.01;
 
-    private double _learningRate;
+    private final double _learningRate;
     private double[] lastZ;
     private double[] lastX;
 

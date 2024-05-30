@@ -2,8 +2,8 @@ package data;
 
 public class Image {
 
-    private double [][] data;
-    private int label;
+    private final double [][] data;
+    private final int label;
 
     public Image(double[][] data, int label) {
         this.data = data;

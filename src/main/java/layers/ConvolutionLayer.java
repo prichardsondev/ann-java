@@ -9,16 +9,16 @@ import static data.MatrixUtility.multiply;
 
 public class ConvolutionLayer extends Layer {
 
-    private long _seed;
+    private final long _seed;
 
     private List<double[][]> _filters;
-    private int _filterSize;
-    private int _stepSize;
-    private int _numFilters;
-    private int _inLength;
-    private int _inRows;
-    private int _inCols;
-    private double _learningRate;
+    private final int _filterSize;
+    private final int _stepSize;
+    private final int _numFilters;
+    private final int _inLength;
+    private final int _inRows;
+    private final int _inCols;
+    private final double _learningRate;
 
     private List<double[][]> _lastInput;
 
@@ -202,9 +202,7 @@ public class ConvolutionLayer extends Layer {
         double[][] output = new double[input.length][input[0].length];
 
         for (int i = 0; i < input.length; i++) {
-            for (int j = 0; j < input[0].length; j++) {
-                output[i][j] = input[input.length-i-1][j];
-            }
+            System.arraycopy(input[input.length - i - 1], 0, output[i], 0, input[0].length);
         }
 
         return output;
