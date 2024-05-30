@@ -7,6 +7,10 @@ import java.util.Random;
 import static data.MatrixUtility.add;
 import static data.MatrixUtility.multiply;
 
+/**
+ * Convolutional layer implementation for a neural network.
+ */
+
 public class ConvolutionLayer extends Layer {
 
     private final long _seed;
@@ -22,6 +26,18 @@ public class ConvolutionLayer extends Layer {
 
     private List<double[][]> _lastInput;
 
+    /**
+     * Constructs a convolutional layer.
+     *
+     * @param filterSize     Size of the filter.
+     * @param stepSize       Step size of the convolution.
+     * @param inLength       Length of the input.
+     * @param inRows         Number of rows in the input.
+     * @param inCols         Number of columns in the input.
+     * @param seed           Seed for random initialization.
+     * @param numFilters     Number of filters.
+     * @param learningRate   Learning rate for updating filters.
+     */
     public ConvolutionLayer(int filterSize, int stepSize, int inLength, int inRows,
                             int inCols, long seed, int numFilters, double learningRate) {
         _filterSize = filterSize;
@@ -36,6 +52,12 @@ public class ConvolutionLayer extends Layer {
         generateRandomFilters(numFilters);
     }
 
+
+    /**
+     * Generates random filters for the convolutional layer.
+     *
+     * @param numFilters Number of filters to generate.
+     */
     private void generateRandomFilters(int numFilters){
         List<double[][]> filters = new ArrayList<>();
         Random random = new Random(_seed);
@@ -57,6 +79,12 @@ public class ConvolutionLayer extends Layer {
 
     }
 
+    /**
+     * Performs the forward pass through the convolutional layer.
+     *
+     * @param list Input data.
+     * @return Output of the layer.
+     */
     public List<double[][]> forwardPass(List<double[][]> list) {
 
         _lastInput = list;
@@ -71,6 +99,16 @@ public class ConvolutionLayer extends Layer {
         return output;
     }
 
+    /**
+     * Performs a convolution operation between the input matrix and the filter matrix.
+     * The convolution operation involves sliding the filter over the input matrix, computing element-wise
+     * multiplications, and summing the results to produce the convolved output.
+     *
+     * @param input     Input matrix.
+     * @param filter    Filter matrix.
+     * @param stepSize  Step size of the convolution.
+     * @return Convolved output.
+     */
     private double[][] convolve(double[][] input, double[][] filter, int stepSize) {
 
         int outRows = (input.length - filter.length)/stepSize+1;
@@ -93,10 +131,10 @@ public class ConvolutionLayer extends Layer {
                 double sum = 0;
                 for (int x = 0; x < fRows; x++) {
                     for (int y = 0; y < fCols; y++) {
-                       int inputRowIndex = i+x;
-                       int inputColIndex = j+y;
+                        int inputRowIndex = i+x;
+                        int inputColIndex = j+y;
 
-                       sum+= filter[x][y] * input[inputRowIndex][inputColIndex];
+                        sum+= filter[x][y] * input[inputRowIndex][inputColIndex];
                     }
                 }
 
@@ -111,6 +149,12 @@ public class ConvolutionLayer extends Layer {
         return  output;
     }
 
+    /**
+     * Converts a 2D input array to a spaced array based on step size.
+     *
+     * @param input Input array.
+     * @return Spaced array.
+     */
     public double[][] spaceArray(double[][] input){
         if(_stepSize ==1 ) return input;
 
@@ -128,6 +172,7 @@ public class ConvolutionLayer extends Layer {
         return output;
     }
 
+
     @Override
     public double[] getOutput(List<double[][]> input) {
         List<double[][]> output = forwardPass(input);
@@ -141,6 +186,19 @@ public class ConvolutionLayer extends Layer {
         return getOutput(matrixInput);
     }
 
+    /**
+     * Performs the backward pass through the layer.
+     * During the backward pass, the gradient of the loss function with respect to the layer output
+     * (often denoted as dL/dO) is propagated backward through the layer to calculate the gradients
+     * with respect to the layer parameters (weights and biases) and the inputs to the layer.
+     *
+     * This process involves using the chain rule of calculus to compute the gradients of the loss
+     * function with respect to the layer parameters and inputs.
+     *
+     * @param dLdO  Gradient of the loss function with respect to the layer output.
+     *              This gradient indicates how much the loss function would increase or decrease
+     *              if the layer output were to increase by a small amount.
+     */
     @Override
     public void backPropagate(List<double[][]> dLdO) {
         List<double[][]> filtersDelta = new ArrayList<>();
@@ -181,6 +239,11 @@ public class ConvolutionLayer extends Layer {
         }
     }
 
+    /**
+     * Performs the backward pass through the layer for a single output.
+     *
+     * @param dLdO  Gradient with respect to the layer output.
+     */
     public void backPropagate(double[] dLdO) {
         List<double[][]> matrixInput = vectorToMatrix(dLdO, _inLength,_inRows, _inCols);
         backPropagate(matrixInput);

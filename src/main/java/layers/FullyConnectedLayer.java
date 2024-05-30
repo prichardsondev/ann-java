@@ -15,6 +15,14 @@ public class FullyConnectedLayer extends Layer {
     private double[] lastZ;
     private double[] lastX;
 
+    /**
+     * Constructs a fully connected layer.
+     *
+     * @param inLength      Length of the input.
+     * @param outLength     Length of the output.
+     * @param seed          Seed for random initialization.
+     * @param learningRate  Learning rate for updating weights.
+     */
     public FullyConnectedLayer(int inLength, int outLength, long seed, double learningRate) {
         _inLength = inLength;
         _outLength = outLength;
@@ -25,6 +33,12 @@ public class FullyConnectedLayer extends Layer {
         setRandomWeights();
     }
 
+    /**
+     * Performs the forward pass through the fully connected layer.
+     *
+     * @param input Input data.
+     * @return Output of the layer.
+     */
     public double[] forwardPass(double[] input){
         lastX = input;
         double[] z = new double[_outLength];
@@ -62,8 +76,20 @@ public class FullyConnectedLayer extends Layer {
         else return forwardPass;
     }
 
+    /**
+     * Performs the backward pass through the layer.
+     * During the backward pass, the gradient of the loss function with respect to the layer output
+     * (often denoted as dL/dO) is propagated backward through the layer to calculate the gradients
+     * with respect to the layer parameters (weights and biases) and the inputs to the layer.
+     *
+     * This process involves using the chain rule of calculus to compute the gradients of the loss
+     * function with respect to the layer parameters and inputs.
+     *
+     * @param dLdO  Gradient of the loss function with respect to the layer output.
+     *              This gradient indicates how much the loss function would increase or decrease
+     *              if the layer output were to increase by a small amount.
+     */
     @Override
-    //how much each weight contributed to error
     public void backPropagate(double[] dLdO) {
         /*
             derivative function - slope of tangent line of a point on original function
@@ -143,7 +169,9 @@ public class FullyConnectedLayer extends Layer {
         return _outLength;
     }
 
-
+    /**
+     * Sets random weights for the fully connected layer.
+     */
     public void setRandomWeights(){
         Random r = new Random(_seed);
 
@@ -154,19 +182,23 @@ public class FullyConnectedLayer extends Layer {
         }
     }
 
-    //activation function
+    /**
+     * Rectified Linear Unit (ReLU) activation function.
+     * ReLU introduces non-linearity to the output by thresholding the input at zero.
+     *
+     * @param input Input value.
+     * @return Output after applying ReLU.
+     */
     public double relu(double input){
         return input <= 0 ? 0 : input;
     }
 
-    public double sigmoid(double input){
-        return 1/(1+Math.exp(-input));
-    }
-
-    public double derivativeSigmoid(double input){
-        return input*(1-input);
-    }
-
+    /**
+     * Derivative of the ReLU activation function.
+     *
+     * @param input Input value.
+     * @return Derivative value.
+     */
     public double derivativeReLu(double input){
         return input <= 0 ? leak : 1;
     }

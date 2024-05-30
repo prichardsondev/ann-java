@@ -3,6 +3,12 @@ package layers;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Max pooling layer implementation for a neural network.
+ * Max pooling reduces the spatial dimensions of the input volume,
+ * resulting in a smaller output volume, while preserving the most
+ * important information.
+ */
 public class MaxPoolLayer extends Layer {
 
     private final int _stepSize;
@@ -16,6 +22,15 @@ public class MaxPoolLayer extends Layer {
     List<int[][]> _lastMaxCol;
 
 
+    /**
+     * Constructs a max pooling layer.
+     *
+     * @param stepSize     Step size of the pooling operation.
+     * @param windowSize   Size of the pooling window.
+     * @param inLength     Length of the input volume.
+     * @param inRows       Number of rows in the input volume.
+     * @param inCols       Number of columns in the input volume.
+     */
     public MaxPoolLayer(int stepSize, int windowSize, int inLength, int inRows, int inCols) {
         _stepSize = stepSize;
         _windowSize = windowSize;
@@ -24,6 +39,12 @@ public class MaxPoolLayer extends Layer {
         _inCols = inCols;
     }
 
+    /**
+     * Performs the forward pass through the max pooling layer.
+     *
+     * @param input Input data.
+     * @return Output of the layer.
+     */
     public List<double[][]> forwardPass(List<double[][]> input){
         List<double[][]> output = new ArrayList<>();
 
@@ -38,6 +59,14 @@ public class MaxPoolLayer extends Layer {
 
     }
 
+    /**
+     * Applies max pooling to the input matrix.
+     * Max pooling partitions the input matrix into non-overlapping windows and
+     * selects the maximum value from each window to create the output matrix.
+     *
+     * @param input The input matrix to be pooled.
+     * @return The result of applying max pooling to the input matrix.
+     */
     private double[][] pool(double[][] input) {
         double[][] output = new double[getOutputRows()][getOutputCols()];
 
@@ -117,21 +146,41 @@ public class MaxPoolLayer extends Layer {
         backPropagate(matrixList);
     }
 
+    /**
+     * Calculates the output length of the layer.
+     *
+     * @return Output length.
+     */
     @Override
     public int getOutputLength() {
         return _inLength;
     }
 
+    /**
+     * Calculates the number of output rows after max pooling.
+     *
+     * @return Number of output rows.
+     */
     @Override
     public int getOutputRows() {
         return (_inRows - _windowSize) / _stepSize + 1;
     }
 
+    /**
+     * Calculates the number of output columns after max pooling.
+     *
+     * @return Number of output columns.
+     */
     @Override
     public int getOutputCols() {
         return (_inCols - _windowSize) / _stepSize + 1;
     }
 
+    /**
+     * Calculates the total number of elements in the output volume.
+     *
+     * @return Total number of output elements.
+     */
     @Override
     public int getOutputElements() {
         return _inLength * getOutputRows() * getOutputCols();
